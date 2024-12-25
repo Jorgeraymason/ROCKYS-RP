@@ -1,174 +1,253 @@
 #include <iostream>
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/System.hpp>
-#include <SFML/System/Clock.hpp>
-#include <SFML/Audio.hpp>
+#include <fstream>
+#include <string>
+#include <sfml/graphics.hpp>
+#include <sfml/window.hpp>
+#include <sfml/system.hpp>
+#include <sfml/system/clock.hpp>
+#include <sfml/audio.hpp>
 
 using namespace sf;
+using namespace std;
 
-//Global Variables
+
+
+//**global variables**
 int money = 0;
 
-bool hasSpeedCola = false;
+bool hasspeedcola = false;
 
-bool hasDamageBuff = false;
+bool hasdamagebuff = false;
 
-float rockySpeed = 9.f;
-
-
-//Function initializations
-int fightStoner();
-
-int shopKorge();
+float rockyspeed = 9.f;
 
 
-//Actual Function
+
+//**function initializations**
+
+//in-game event functions
+int fightstoner();
+
+int namelessinvasion();
+
+int shopkorge();
+
+//utility functions
+int savegame();
+
+int loadgame();
+
+
 int main()
 {
-	RenderWindow window(VideoMode(2000, 800), "ROCKYS RP");
-	window.setFramerateLimit(60);
+	renderwindow window(videomode(2000, 800), "rockys rp");
+	window.setframeratelimit(60);
 
 
-	//**ROCKY CHARACTER
-	Texture rockyTex;
+	//**jorgeraymason character
+	texture rockytex;
 
-	if (!rockyTex.loadFromFile("Resource-Files/Images/rocky.png"))
+	if (!rockytex.loadfromfile("resource-files/images/rocky.png"))
 	{
 		throw "file didn't load gang member";
 	}
 
-	RectangleShape rocky(Vector2f(100.f, 100.f));
-	rocky.setTexture(&rockyTex);
-	rocky.setPosition(window.getSize().x / 4, window.getSize().y / 6);
+	rectangleshape rocky(vector2f(100.f, 100.f));
+	rocky.settexture(&rockytex);
+	rocky.setposition(window.getsize().x / 4, window.getsize().y / 6);
 
 
 
-	//**STONER CHARACTER
-	Texture stonerTex;
+	//**~lost character
+	texture stonertex;
 
-	if (!stonerTex.loadFromFile("Resource-Files/Images/stoner.jpg"))
+	if (!stonertex.loadfromfile("resource-files/images/stoner.jpg"))
 	{
 		throw "file didn't load gang member";
 	}
 
-	RectangleShape stoner(Vector2f(100.f, 100.f));
-	stoner.setTexture(&stonerTex);
-	stoner.setPosition(window.getSize().x / 2, 506.f);
+	rectangleshape stoner(vector2f(100.f, 100.f));
+	stoner.settexture(&stonertex);
+	stoner.setposition(window.getsize().x / 2, 506.f);
 
-	
 
-	//**Outdoor background
-	Texture outsideTex;
 
-	if (!outsideTex.loadFromFile("Resource-Files/Images/outside.jpg"))
+	//**namelessbrown character
+	texture namelesstex;
+
+	if (!namelesstex.loadfromfile("resource-files/images/namelessbrown.png"))
 	{
 		throw "file didn't load gang member";
 	}
 
-	RectangleShape outside(Vector2f(window.getSize().x, window.getSize().y));
-	outside.setTexture(&outsideTex);
+	rectangleshape nameless(vector2f(100.f, 100.f));
+	nameless.settexture(&namelesstex);
+	nameless.setposition(1420.f, 606.f);
 
 
 
-	//**Korge Store 
-	Texture korgeTex;
+	//**outdoor background
+	texture outsidetex;
 
-	if (!korgeTex.loadFromFile("Resource-Files/Images/korge.jpg"))
+	if (!outsidetex.loadfromfile("resource-files/images/outside.jpg"))
 	{
 		throw "file didn't load gang member";
 	}
 
-	RectangleShape korge(Vector2f(100.f, 700.f));
-	korge.setTexture(&korgeTex);
-	korge.setPosition(0.f, 0.f);
-
-	bool inKorge = false;
+	rectangleshape outside(vector2f(window.getsize().x, window.getsize().y));
+	outside.settexture(&outsidetex);
 
 
 
-	//Font Text
-	Font font;
-	if (!font.loadFromFile("Resource-Files/Fonts/Comic-Sans-MS.ttf"))
-		return EXIT_FAILURE;
+	//**korge store 
+	texture korgetex;
 
-	Text text("fight me! ", font, 50);
-	text.setPosition(window.getSize().x / 2, 430.f);
-	text.setFillColor(Color::Blue);
+	if (!korgetex.loadfromfile("resource-files/images/korge.jpg"))
+	{
+		throw "file didn't load gang member";
+	}
+
+	rectangleshape korge(vector2f(100.f, 700.f));
+	korge.settexture(&korgetex);
+	korge.setposition(0.f, 0.f);
+
+	bool inkorge = false;
 
 
 
-	//**MUSIC**
-	Music wackyMusic;
+	//**font text
+	font font;
+	if (!font.loadfromfile("resource-files/fonts/comic-sans-ms.ttf"))
+		return exit_failure;
 
-	if (!wackyMusic.openFromFile("Resource-Files/Audio/wackyMusic.wav"))
+	text text("", font, 25);
+	text.setfillcolor(color::blue);
+
+
+
+	//**music**
+	music wackymusic;
+
+if (!wackymusic.openfromfile("resource-files/audio/wackymusic.wav"))
 	{
 		return 1;
 	}
 
-	wackyMusic.play();
-	wackyMusic.setLoop(true);
+	
+	//play music
 
-	while (window.isOpen())
+	//wackymusic.play();
+	//wackymusic.setloop(true);
+
+	while (window.isopen())
 	{
-		Event event;
-		while (window.pollEvent(event))
+		event event;
+		while (window.pollevent(event))
 		{
-			if (event.type == Event::Closed)
+			if (event.type == event::closed)
 			{
 				window.close();
 			}
 
-			if (Keyboard::isKeyPressed(Keyboard::Escape))
+			if (keyboard::iskeypressed(keyboard::escape))
 			{
 				window.close();
 			}
+
 		}
 
-			//Character movement (for some odd reason it makes me do this, I have to tab it over)
-			if (Keyboard::isKeyPressed(Keyboard::Up) && rocky.getPosition().y > 0)
+			//character movement (for some odd reason it makes me do this, i have to tab it over)
+			if (keyboard::iskeypressed(keyboard::up) && rocky.getposition().y > 0)
 			{	
-				rocky.move(0.f, -rockySpeed);
+				rocky.move(0.f, -rockyspeed);
 			}
 
-			if (Keyboard::isKeyPressed(Keyboard::Down) && rocky.getPosition().y + rocky.getSize().y < window.getSize().y)
+			if (keyboard::iskeypressed(keyboard::down) && rocky.getposition().y + rocky.getsize().y < window.getsize().y)
 			{	
-				rocky.move(0.f, rockySpeed);
+				rocky.move(0.f, rockyspeed);
 			}
 
-			if (Keyboard::isKeyPressed(Keyboard::Left) && rocky.getPosition().x > 0)
+			if (keyboard::iskeypressed(keyboard::left) && rocky.getposition().x > 0)
 			{				
-				rocky.move(-rockySpeed, 0.f);
+				rocky.move(-rockyspeed, 0.f);
 			}
 
-			if (Keyboard::isKeyPressed(Keyboard::Right) && rocky.getPosition().x + rocky.getSize().x < window.getSize().x)
+			if (keyboard::iskeypressed(keyboard::right) && rocky.getposition().x + rocky.getsize().x < window.getsize().x)
 			{
-				rocky.move(rockySpeed, 0.f);
+				rocky.move(rockyspeed, 0.f);
 			}
+
+			//saves game
+			if (keyboard::iskeypressed(keyboard::s))
+			{
+				if (savegame() == 0) {
+					text.setposition(window.getsize().x / 2, window.getsize().y / 2);
+					text.setstring("game progress saved.");
+				}
+				else {
+					text.setstring("failed to save game.");
+				}
+			}
+
+
+			//loads game
+			if (keyboard::iskeypressed(keyboard::l))
+			{
+				if (loadgame() == 0) {
+					text.setposition(window.getsize().x / 2, window.getsize().y / 2);
+					text.setstring("game loaded.");
+				}
+				else {
+					text.setstring("failed to load game.");
+				}
+			}
+			
+
+		//**game events**\\
+
 		
-
-		//**Game Events**\\
-
-
-		//Intersect with stoner and fight him
-		if (rocky.getGlobalBounds().intersects(stoner.getGlobalBounds()))
+		//intersect with ~lost and fight him
+		if (rocky.getglobalbounds().intersects(stoner.getglobalbounds()))
 		{
-			wackyMusic.stop();
+			text.setposition(stoner.getposition().x, stoner.getposition().y + 200);
+			text.setstring("fight me! (press enter to fight stoner)");
 
-			window.close();
+			if (keyboard::iskeypressed(keyboard::enter))
+			{
+				wackymusic.stop();
 
-			fightStoner();
+				window.close();
+
+				fightstoner();
+			}
 		}
 
 		
-		//Go to the store and shop!
-		if (rocky.getGlobalBounds().intersects(korge.getGlobalBounds()))
+		//go to the store and shop!
+		if (rocky.getglobalbounds().intersects(korge.getglobalbounds()))
 		{
-			wackyMusic.stop();
+			wackymusic.stop();
 
 			window.close();
 
-			shopKorge();
+			shopkorge();
+		}
+
+
+		//the invasion of namelessbrown!
+		if (rocky.getglobalbounds().intersects(nameless.getglobalbounds()))
+		{
+			text.setposition(nameless.getposition().x - 1000, nameless.getposition().y / 4);
+			text.setstring("i will invade the world! i must first overthrow the freemasons....(press enter to stop the nameless invasion)");
+
+			if (keyboard::iskeypressed(keyboard::enter))
+			{
+				wackymusic.stop();
+
+				window.close();
+
+				namelessinvasion();
+			}
 		}
 
 
@@ -177,6 +256,7 @@ int main()
 		window.draw(outside);
 		window.draw(rocky);
 		window.draw(stoner);
+		window.draw(nameless);
 		window.draw(korge);
 		window.draw(text);
 
@@ -187,76 +267,113 @@ int main()
 }
 
 
-int fightStoner() {
-	RenderWindow window(VideoMode(640, 800), "JORGERAYMASON vs ~lost");
-	window.setFramerateLimit(60);
+int savegame() {
+	ofstream file("gamedata.txt");
+	if (file.is_open()) {
+		file << money << endl;
+		file << hasspeedcola << endl;
+		file << hasdamagebuff << endl;
+		file << rockyspeed << endl;
+		file.close();
+		cout << "game saved successfully!" << endl;
+		return 0;
+	}
+	else {
+		cout << "unable to open file for saving." << endl;
+		return 1;
+	}
+}
+
+
+int loadgame() {
+	ifstream file("gamedata.txt");
+	if (file.is_open()) {
+		file >> money;
+		file >> hasspeedcola;
+		file >> hasdamagebuff;
+		file >> rockyspeed;
+		file.close();
+		cout << "game loaded successfully!" << endl;
+		return 0;
+	}
+	else {
+		cout << "unable to open file for loading." << endl;
+		return 1;
+	}
+}
+
+
+int fightstoner() {
+	renderwindow window(videomode(640, 800), "jorgeraymason vs ~lost");
+	window.setframeratelimit(60);
 	
-	//Initialzes variables
+
+	//initialzes variables
 	int health = 5;
 	int misses;
-	float hoopSpeed = 10.f;
-	float ballSpeed = -6.f;
+	float hoopspeed = 10.f;
+	float ballspeed = -6.f;
 
-	if (hasSpeedCola == true)
+	if (hasspeedcola == true)
 	{
-		ballSpeed = -11.f;
+		ballspeed = -11.f;
 	}
 
-	//Hoop tex/shape
-	Texture stonerTex;
+	//hoop tex/shape
+	texture stonertex;
 
-	if (!stonerTex.loadFromFile("Resource-Files/Images/stoner.jpg"))
+	if (!stonertex.loadfromfile("resource-files/images/stoner.jpg"))
 	{
 		throw "file didn't load gang member";
 	}
 
-	CircleShape hoop;
+	circleshape hoop;
 	int dir = 0;
-	hoop.setRadius(50.f);
-	hoop.setPosition(Vector2f(0, 10.f));
-	hoop.setTexture(&stonerTex);
+	hoop.setradius(50.f);
+	hoop.setposition(vector2f(0, 10.f));
+	hoop.settexture(&stonertex);
 	
-	//Ball tex/shape
-	Texture rockyTex;
+	//ball tex/shape
+	texture rockytex;
 
-	if (!rockyTex.loadFromFile("Resource-Files/Images/rocky.png"))
+	if (!rockytex.loadfromfile("resource-files/images/rocky.png"))
 	{
 		throw "file didn't load gang member";
 	}
 
-	CircleShape ball;
-	bool isShot = false;
-	ball.setRadius(20.f);
-	ball.setPosition(Vector2f(0, window.getSize().y - ball.getRadius() * 3));
-	ball.setTexture(&rockyTex);
+	circleshape ball;
+	bool isshot = false;
+	ball.setradius(20.f);
+	ball.setposition(vector2f(0, window.getsize().y - ball.getradius() * 3));
+	ball.settexture(&rockytex);
 
-	while (window.isOpen())
+	while (window.isopen())
 	{
 	
-		//Font and Text declaration
-		Font font;
-		if (!font.loadFromFile("Resource-Files/Fonts/Comic-Sans-MS.ttf"))
-			return EXIT_FAILURE;
+		//font and text declaration
+		font font;
+		if (!font.loadfromfile("resource-files/fonts/comic-sans-ms.ttf"))
+			return exit_failure;
 	
-		Text text("", font, 50);
-		text.setPosition(-3.f, 5.f);
-		text.setFillColor(Color::Blue);
+		text text("", font, 50);
+		text.setposition(-3.f, 5.f);
+		text.setfillcolor(color::blue);
 
 	
-		Event event;
-		while (window.pollEvent(event))
+		event event;
+		while (window.pollevent(event))
 		{
-			if (event.type == Event::Closed)
+			if (event.type == event::closed)
 			{
 				window.close();
 			}
 	
-			if (Keyboard::isKeyPressed(Keyboard::Escape))
+			if (keyboard::iskeypressed(keyboard::escape))
 			{
 				window.close();
 			}
 
-			if (Keyboard::isKeyPressed(Keyboard::B))
+			if (keyboard::iskeypressed(keyboard::b))
 			{
 				window.close();
 
@@ -264,39 +381,39 @@ int fightStoner() {
 			}
 		}
 	
-		//Update
-		if (hoop.getPosition().x <= 0)
+		//update
+		if (hoop.getposition().x <= 0)
 			dir = 1;
-		else if(hoop.getPosition().x + hoop.getRadius() >= window.getSize().x)
+		else if(hoop.getposition().x + hoop.getradius() >= window.getsize().x)
 			dir = 0;
 	
 		if (dir == 0)
 		{
-			hoop.move(-hoopSpeed, 0);
+			hoop.move(-hoopspeed, 0);
 		}
 		else
 		{
-			hoop.move(hoopSpeed, 0);
+			hoop.move(hoopspeed, 0);
 		}
 	
-		//Update ball shot
-		if (Mouse::isButtonPressed(Mouse::Left))
+		//update ball shot
+		if (mouse::isbuttonpressed(mouse::left))
 		{
-			isShot = true;
+			isshot = true;
 		}
 	
-		if(!isShot)
-			ball.setPosition(Mouse::getPosition(window).x, ball.getPosition().y);
+		if(!isshot)
+			ball.setposition(mouse::getposition(window).x, ball.getposition().y);
 		else
-			ball.move(0, ballSpeed);
+			ball.move(0, ballspeed);
 	
-		//Collision ball
-		if (ball.getPosition().y <= 0 || ball.getGlobalBounds().intersects(hoop.getGlobalBounds()))
+		//collision ball
+		if (ball.getposition().y <= 0 || ball.getglobalbounds().intersects(hoop.getglobalbounds()))
 		{
 	
-			if (ball.getGlobalBounds().intersects(hoop.getGlobalBounds()))
+			if (ball.getglobalbounds().intersects(hoop.getglobalbounds()))
 			{
-				if (hasDamageBuff)
+				if (hasdamagebuff)
 				{
 					health -= 3; // decreae health by 3 when the ball collides with the hoop if player has damage buff
 				}
@@ -305,7 +422,7 @@ int fightStoner() {
 	
 				misses = 0;
 	
-				hoopSpeed += 1.f;
+				hoopspeed += 1.f;
 			}
 			else
 			{
@@ -315,7 +432,7 @@ int fightStoner() {
 				{
 					health = 5;
 	
-					hoopSpeed = 10.f;
+					hoopspeed = 10.f;
 				}
 			}
 
@@ -323,23 +440,23 @@ int fightStoner() {
 			{
 				window.close();
 
-				money += 10; //Award $10 for beating stoner
+				money += 10; //award $10 for beating stoner
 				
 				main();
 
 			}
 	
-			//Resets ball position
-			isShot = false;
-			ball.setPosition(ball.getPosition().x, window.getSize().y - ball.getRadius() * 3);
+			//resets ball position
+			isshot = false;
+			ball.setposition(ball.getposition().x, window.getsize().y - ball.getradius() * 3);
 		}
 	
-		window.clear(Color::White);
+		window.clear(color::white);
 	
-		// Update health text
-		text.setString("Health: " + std::to_string(health));
+		// update health text
+		text.setstring("health: " + std::to_string(health));
 	
-		//Draw
+		//draw
 		window.draw(hoop);
 	
 		window.draw(text);
@@ -353,143 +470,143 @@ int fightStoner() {
 }
 
 
-int shopKorge() {
-	RenderWindow window(VideoMode(2000, 800), "KORGE. FEED THE HUMAN SPIRIT");
-	window.setFramerateLimit(60);
+int shopkorge() {
+	renderwindow window(videomode(2000, 800), "korge. feed the human spirit");
+	window.setframeratelimit(60);
 
 
-	//**ROCKY CHARACTER TEX/SHAPE
-	Texture rockyTex;
+	//**rocky character tex/shape
+	texture rockytex;
 
-	if (!rockyTex.loadFromFile("Resource-Files/Images/rocky.png"))
+	if (!rockytex.loadfromfile("resource-files/images/rocky.png"))
 	{
 		throw "file didn't load gang member";
 	}
 
-	RectangleShape rocky(Vector2f(100.f, 100.f));
-	rocky.setTexture(&rockyTex);
-	rocky.setPosition(window.getSize().x / 2, window.getSize().y / 2);
+	rectangleshape rocky(vector2f(100.f, 100.f));
+	rocky.settexture(&rockytex);
+	rocky.setposition(window.getsize().x / 2, window.getsize().y / 2);
 
 
-	//Store background tex
-	Texture korgeInsideTex;
+	//store background tex
+	texture korgeinsidetex;
 
-	if (!korgeInsideTex.loadFromFile("Resource-Files/Images/korgeInside.jpeg"))
+	if (!korgeinsidetex.loadfromfile("resource-files/images/korgeinside.jpeg"))
 	{
 		throw "file didn't load gang member";
 	}
 
-	RectangleShape korgeInside(Vector2f(window.getSize().x, window.getSize().y));
-	korgeInside.setTexture(&korgeInsideTex);
+	rectangleshape korgeinside(vector2f(window.getsize().x, window.getsize().y));
+	korgeinside.settexture(&korgeinsidetex);
 
 
-	//Exit Door shape/texture
-	Texture exitDoorTex;
+	//exit door shape/texture
+	texture exitdoortex;
 
-	if (!exitDoorTex.loadFromFile("Resource-Files/Images/door.jpg"))
+	if (!exitdoortex.loadfromfile("resource-files/images/door.jpg"))
 	{
 		throw "file didn't load gang member";
 	}
 
-	RectangleShape exitDoor(Vector2f(100.f, 100.f));
-	exitDoor.setPosition(Vector2f(0.f, 0.f));
-	exitDoor.setTexture(&exitDoorTex);
+	rectangleshape exitdoor(vector2f(100.f, 100.f));
+	exitdoor.setposition(vector2f(0.f, 0.f));
+	exitdoor.settexture(&exitdoortex);
 
 
-	//**Shop ITEMS tex/shapes
+	//**shop items tex/shapes
 
-	//Speed Cola
-	Texture speedColaTex;
+	//speed cola
+	texture speedcolatex;
 
-	if (!speedColaTex.loadFromFile("Resource-Files/Images/speedCola.jpg"))
+	if (!speedcolatex.loadfromfile("resource-files/images/speedcola.jpg"))
 	{
 		throw "file didn't load gang member";
 	}
 
-	RectangleShape speedCola(Vector2f(100.f, 100.f));
-	speedCola.setTexture(&speedColaTex);
-	speedCola.setPosition(110.f, 500.f);
+	rectangleshape speedcola(vector2f(100.f, 100.f));
+	speedcola.settexture(&speedcolatex);
+	speedcola.setposition(110.f, 500.f);
 
 
-	//Damage Buff
-	Texture damageBuffTex;
+	//damage buff
+	texture damagebufftex;
 
-	if (!damageBuffTex.loadFromFile("Resource-Files/Images/damageBuff.png"))
+	if (!damagebufftex.loadfromfile("resource-files/images/damagebuff.png"))
 	{
 		throw "file didn't load gang member";
 	}
 
-	RectangleShape damageBuff(Vector2f(100.f, 100.f));
-	damageBuff.setTexture(&damageBuffTex);
-	damageBuff.setPosition(530.f, 250.f);
+	rectangleshape damagebuff(vector2f(100.f, 100.f));
+	damagebuff.settexture(&damagebufftex);
+	damagebuff.setposition(530.f, 250.f);
 
 
-	//Store music
-	Music korgeMusic;
+	//store music
+	music korgemusic;
 
-	if (!korgeMusic.openFromFile("Resource-Files/Audio/korgeMusic.wav"))
+	if (!korgemusic.openfromfile("resource-files/audio/korgemusic.wav"))
 	{
 		return 1;
 	}
 
-	korgeMusic.play();
-	korgeMusic.setLoop(true);
+	//korgemusic.play();
+	//korgemusic.setloop(true);
 
 
-	while (window.isOpen())
+	while (window.isopen())
 	{
-		//Font and Text declaration
-		Font font;
-		if (!font.loadFromFile("Resource-Files/Fonts/Comic-Sans-MS.ttf"))
-			return EXIT_FAILURE;
+		//font and text declaration
+		font font;
+		if (!font.loadfromfile("resource-files/fonts/comic-sans-ms.ttf"))
+			return exit_failure;
 
-		//Money Text display
-		Text text("", font, 50);
-		text.setPosition(110.f, 5.f);
-		text.setFillColor(Color::Black);
-
-
-		//Item text description
-		Text desc("", font, 35);
-		desc.setFillColor(Color::White);
+		//money text display
+		text text("", font, 50);
+		text.setposition(110.f, 5.f);
+		text.setfillcolor(color::black);
 
 
-		Event event;
-		while (window.pollEvent(event)) {
+		//item text description
+		text desc("", font, 35);
+		desc.setfillcolor(color::white);
 
-			if (event.type == Event::Closed)
+
+		event event;
+		while (window.pollevent(event)) {
+
+			if (event.type == event::closed)
 				window.close();
 		}
 
-		if (event.type == Keyboard::isKeyPressed(Keyboard::Escape))
+		if (event.type == keyboard::iskeypressed(keyboard::escape))
 		{
 			window.close();
 		}
 
-		if (Keyboard::isKeyPressed(Keyboard::Up) && rocky.getPosition().y > 0)
+		if (keyboard::iskeypressed(keyboard::up) && rocky.getposition().y > 0)
 		{
-			rocky.move(0.f, -rockySpeed);
+			rocky.move(0.f, -rockyspeed);
 		}
 
-		if (Keyboard::isKeyPressed(Keyboard::Down) && rocky.getPosition().y + rocky.getSize().y < window.getSize().y)
+		if (keyboard::iskeypressed(keyboard::down) && rocky.getposition().y + rocky.getsize().y < window.getsize().y)
 		{
-			rocky.move(0.f, rockySpeed);
+			rocky.move(0.f, rockyspeed);
 		}
 
-		if (Keyboard::isKeyPressed(Keyboard::Left) && rocky.getPosition().x > 0)
+		if (keyboard::iskeypressed(keyboard::left) && rocky.getposition().x > 0)
 		{
-			rocky.move(-rockySpeed, 0.f);
+			rocky.move(-rockyspeed, 0.f);
 		}
 
-		if (Keyboard::isKeyPressed(Keyboard::Right) && rocky.getPosition().x + rocky.getSize().x < window.getSize().x)
+		if (keyboard::iskeypressed(keyboard::right) && rocky.getposition().x + rocky.getsize().x < window.getsize().x)
 		{
-			rocky.move(rockySpeed, 0.f);
+			rocky.move(rockyspeed, 0.f);
 		}
 
-		//Exit the shop
-		if (rocky.getGlobalBounds().intersects(exitDoor.getGlobalBounds()))
+		//exit the shop
+		if (rocky.getglobalbounds().intersects(exitdoor.getglobalbounds()))
 		{
-			korgeMusic.stop();
+			korgemusic.stop();
 
 			window.close();
 
@@ -497,97 +614,97 @@ int shopKorge() {
 		}
 
 
-		//Buy speedCola
-		if (rocky.getGlobalBounds().intersects(speedCola.getGlobalBounds()))
+		//buy speedcola
+		if (rocky.getglobalbounds().intersects(speedcola.getglobalbounds()))
 		{
 			int price = 10;
 
-			desc.setPosition(95.f, 450.f);
-			desc.setString("Speed Cola: $10. Increases movement speed/Speed in battle. (Left Click to buy)");
+			desc.setposition(95.f, 450.f);
+			desc.setstring("speed cola: $10. increases movement speed/speed in battle. (left click to buy)");
 
 
-			if (Mouse::isButtonPressed(Mouse::Left))
+			if (mouse::isbuttonpressed(mouse::left))
 			{
-				if (!hasSpeedCola && money >= price)
+				if (!hasspeedcola && money >= price)
 				{
-					hasSpeedCola = true;
+					hasspeedcola = true;
 
 					money -= price;
 
-					rockySpeed = 13.f;
+					rockyspeed = 13.f;
 
-					desc.setString("Speed Cola purchased successfully!");
+					desc.setstring("speed cola purchased successfully!");
 				}
 				else
 				{
-					desc.setString("Insufficient funds!");
+					desc.setstring("insufficient funds!");
 				}
 
-				//If user has item unlocked, when they hover over it, it will display that they own it
-				if (hasSpeedCola)
+				//if user has item unlocked, when they hover over it, it will display that they own it
+				if (hasspeedcola)
 				{
-					desc.setString("You already own this item.");
+					desc.setstring("you already own this item.");
 				}
 
-				// Add a small delay to prevent multiple purchases on a single click
+				// add a small delay to prevent multiple purchases on a single click
 				sf::sleep(sf::milliseconds(200));
 			}
 		}
 
 
-		//Buy Damage Buff
-		if (rocky.getGlobalBounds().intersects(damageBuff.getGlobalBounds()))
+		//buy damage buff
+		if (rocky.getglobalbounds().intersects(damagebuff.getglobalbounds()))
 		{
 			int price = 30;
 
-			desc.setPosition(400.f, 230.f);
-			desc.setString("Damage Buff: $30. Hit harder in battle. (Left Click to buy)");
+			desc.setposition(400.f, 230.f);
+			desc.setstring("damage buff: $30. hit harder in battle. (left click to buy)");
 
 
-			if (Mouse::isButtonPressed(Mouse::Left))
+			if (mouse::isbuttonpressed(mouse::left))
 			{
-				if (!hasDamageBuff && money >= price)
+				if (!hasdamagebuff && money >= price)
 				{
-					hasDamageBuff = true;
+					hasdamagebuff = true;
 
 					money -= price;
 
-					desc.setString("Damage Buff purchased successfully!");
+					desc.setstring("damage buff purchased successfully!");
 				}
 				else
 				{
-					desc.setString("Insufficient funds!");
+					desc.setstring("insufficient funds!");
 				}
 
-				//If user has item unlocked, when they hover over it, it will display that they own it
-				if (hasDamageBuff)
+				//if user has item unlocked, when they hover over it, it will display that they own it
+				if (hasdamagebuff)
 				{
-					desc.setString("You already own this item.");
+					desc.setstring("you already own this item.");
 				}
 
-				// Add a small delay to prevent multiple purchases on a single click
+				// add a small delay to prevent multiple purchases on a single click
 				sf::sleep(sf::milliseconds(200));
 			}
 		}
 
 
-		// Update money balance text
-		text.setString("Money: $" + std::to_string(money));
+		// update money balance text
+		text.setstring("money: $" + std::to_string(money));
 
 
 		window.clear();
 
-		window.draw(korgeInside);
+		window.draw(korgeinside);
 
 		window.draw(rocky);
 
 		window.draw(text);
 
-		window.draw(exitDoor);
+		window.draw(exitdoor);
 
-		window.draw(speedCola);
+		window.draw(speedcola);
 
-		window.draw(damageBuff);
+		window.draw(damagebuff);
 
 		window.draw(desc);
 
@@ -598,3 +715,80 @@ int shopKorge() {
 	return 0;
 }
 
+
+int namelessinvasion() {
+
+	renderwindow window(videomode(600, 400), "invasion of namelessbrown!");
+	
+	window.setframeratelimit(60);
+
+
+	//**jorgeraymason character
+	texture rockytex;
+
+	if (!rockytex.loadfromfile("resource-files/images/rocky.png"))
+	{
+		throw "file didn't load gang member";
+	}
+
+	rectangleshape rocky(vector2f(100.f, 100.f));
+	rocky.settexture(&rockytex);
+	rocky.setposition(window.getsize().x / 4, window.getsize().y / 6);
+
+	
+	
+	while (window.isopen())
+	{
+		event event;
+	
+		while(window.pollevent(event)){
+	
+			if (event.type == event::closed)
+				window.close();
+	
+			if (event.type == keyboard::iskeypressed(keyboard::escape))
+			{
+				window.close();
+			}
+			if (keyboard::iskeypressed(keyboard::b))
+			{
+				window.close();
+
+				main();
+			}
+		}
+
+			//character movement (for some odd reason it makes me do this, i have to tab it over)
+			if (keyboard::iskeypressed(keyboard::up) && rocky.getposition().y > 0)
+			{
+				rocky.move(0.f, -rockyspeed);
+			}
+
+			if (keyboard::iskeypressed(keyboard::down) && rocky.getposition().y + rocky.getsize().y < window.getsize().y)
+			{
+				rocky.move(0.f, rockyspeed);
+			}
+
+			if (keyboard::iskeypressed(keyboard::left) && rocky.getposition().x > 0)
+			{
+				rocky.move(-rockyspeed, 0.f);
+			}
+
+			if (keyboard::iskeypressed(keyboard::right) && rocky.getposition().x + rocky.getsize().x < window.getsize().x)
+			{
+				rocky.move(rockyspeed, 0.f);
+			}
+	
+
+		window.clear();
+	
+		//draws shapes
+		window.draw(rocky);
+	
+		//displays whatever you draw
+		window.display();
+	
+	}
+	
+	return 0;
+}
